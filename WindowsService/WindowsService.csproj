@@ -56,5 +56,15 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Abstracts\Abstracts.csproj">
+      <Project>{ca365004-a71c-4cd6-b764-b03e7cc4984e}</Project>
+      <Name>Abstracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonServices\CommonServices.csproj">
+      <Project>{a2d93ac4-dacb-42bf-ae43-b50909e98a4d}</Project>
+      <Name>CommonServices</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
