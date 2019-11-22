@@ -1,0 +1,7 @@
+{
+  "AzureAd": {
+    "ClientId": "12345",
+    "ClientSecret": "very-secret",
+    "TenantId": "mytenant.com"
+  }
+}
