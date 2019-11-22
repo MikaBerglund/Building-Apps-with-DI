@@ -11,34 +11,18 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            var provider = ConfigureServices();
-            var config = provider.GetService<IConfiguration>();
-            var service = provider.GetService<GraphService>();
-        }
-
-
-
-        static IServiceProvider ConfigureServices()
-        {
-            var services = new ServiceCollection();
-            ConfigureServices(services);
-
-            return services.BuildServiceProvider();
-        }
-
-        static void ConfigureServices(IServiceCollection services)
-        {
             var configRoot = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .Build();
 
-                .Build()
-            ;
-
+            var services = new ServiceCollection();
             services.AddSingleton(configRoot);
-            services.AddSingleton<IConfiguration>(configRoot);
             services.AddSingleton(configRoot.GetSection("AzureAd").Get<AzureAdApplicationSettings>());
             services.AddSingleton<GraphService>();
+
+            var provider = services.BuildServiceProvider();
+            var service = provider.GetService<GraphService>();
         }
 
     }
