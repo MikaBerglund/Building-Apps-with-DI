@@ -1,4 +1,5 @@
-﻿using ConsoleApp.Configuration;
+﻿using Abstracts.Configuration;
+using CommonServices;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,7 +13,7 @@ namespace ConsoleApp
         {
             var provider = ConfigureServices();
             var config = provider.GetService<IConfiguration>();
-            var aadSection = config.GetSection("AzureAd").Get<AzureAdOptions>();
+            var service = provider.GetService<GraphService>();
         }
 
 
@@ -22,24 +23,24 @@ namespace ConsoleApp
             var services = new ServiceCollection();
             ConfigureServices(services);
 
-            
             return services.BuildServiceProvider();
         }
 
         static void ConfigureServices(IServiceCollection services)
         {
-            services.AddConfiguration(builder =>
-            {
-                var dir = Directory.GetCurrentDirectory();
+            var configRoot = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
 
-                builder
-                    .SetBasePath(dir)
-                    .AddJsonFile("local.settings.json", optional: true, reloadOnChange: true)
+                .Build()
+            ;
 
-                    .Build()
-                ;
-            });
+            services.AddSingleton(configRoot);
+            services.AddSingleton<IConfiguration>(configRoot);
+            services.AddSingleton(configRoot.GetSection("AzureAd").Get<AzureAdApplicationSettings>());
+            services.AddSingleton<GraphService>();
         }
+
     }
 
 }
